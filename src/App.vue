@@ -1,113 +1,73 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue"
-
-import PokemonModal from "@/components/PokemonModal.vue"
-
-import type { Pokemon } from "@/types/pokemon"
-
-import PokemonGrid from "@/components/PokemonGrid.vue"
-
-import { usePokemon } from "@/composables/usePokemon"
-
-import SearchBar from "@/components/SearchBar.vue"
-
-const search = ref("")
-
-const filteredPokemon = computed(() => {
-    if (!search.value.trim()) {
-        return pokemonList.value
-    }
-
-    return pokemonList.value.filter((pokemon) =>
-        pokemon.name
-            .toLowerCase()
-            .includes(search.value.toLowerCase())
-    )
-})
-
-const selectedPokemon = ref<Pokemon | null>(null)
-
-function selectPokemon(pokemon: Pokemon) {
-    selectedPokemon.value = pokemon
-}
-
-function closeModal() {
-    selectedPokemon.value = null
-}
-
-const {
-    pokemonList,
-    loading,
-    error,
-    fetchPokemonList,
-    hasMore
-} = usePokemon()
-
-onMounted(() => {
-    fetchPokemonList()
-})
-
-function handleSearch(value: string) {
-    search.value = value
-}
+import { RouterLink, RouterView } from "vue-router"
 </script>
 
 <template>
-    <main class="container">
-        <h1>Pokédex</h1>
+    <header class="navbar">
 
-        <SearchBar @search="handleSearch" />
+        <h2>Pokemon</h2>
 
-        <p v-if="loading">Loading Pokémon...</p>
+        <nav>
+            <RouterLink to="/">Home</RouterLink>
 
-        <p v-else-if="error" class="error">
-            {{ error }}
-        </p>
+            <RouterLink to="/dashboard">
+                Dashboard
+            </RouterLink>
 
-        <PokemonGrid v-else :pokemons="filteredPokemon" @select="selectPokemon" />
+            <RouterLink to="/minigame">
+                Minigame
+            </RouterLink>
+        </nav>
 
-        <div class="load-more">
-            <button v-if="hasMore && !loading" @click="fetchPokemonList">
-                Load More
-            </button>
-        </div>
-        <PokemonModal v-if="selectedPokemon" :pokemon="selectedPokemon" @close="closeModal" />
-    </main>
+    </header>
+
+    <RouterView />
 </template>
 
 <style scoped>
-.container {
-    max-width: 1400px;
-    margin: auto;
-    padding: 2rem;
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 1rem 2rem;
+
+    background: #0f172a;
+
+    border-bottom: 1px solid #38bdf8;
 }
 
-h1 {
-    text-align: center;
-    font-size: 3rem;
-    letter-spacing: .4rem;
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: .25s;
+}
+
+nav a:hover {
     color: #38bdf8;
-    text-shadow:
-      0 0 10px #38bdf8,
-      0 0 30px #38bdf8;
-    margin-bottom: 2rem;
+
+    border-color: #38bdf8;
+
+    box-shadow:
+        0 0 8px #38bdf8,
+        0 0 18px #38bdf8;
+
+    background: rgba(56,189,248,.08);
+
+    transform: translateY(-2px);
 }
 
-.error {
-    text-align: center;
-    color: red;
-}
-
-.load-more {
-  display: flex;
-  justify-content: center;
-  margin: 2rem 0;
-}
-
-.load-more button {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
 </style>

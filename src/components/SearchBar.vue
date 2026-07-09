@@ -17,7 +17,7 @@ function handleSearch() {
     <input
       v-model="search"
       type="text"
-      placeholder="Search Pokémon by name or ID..."
+      placeholder="Search Pokémon..."
       @keyup.enter="handleSearch"
     />
 
@@ -30,12 +30,14 @@ function handleSearch() {
 <style scoped>
 .search-bar {
   display: flex;
-  gap: 1rem;
+  justify-content: flex-end;
+  align-items: center;
+  gap: .7rem;
   margin-bottom: 2rem;
 }
 
 input {
-  flex: 1;
+  width: max(200px, 5%);
   background: #111827;
   color: white;
   padding: 0.75rem;
@@ -51,6 +53,7 @@ input:focus {
 }
 
 button {
+  width: max(100px, 5%);
   padding: 0.75rem 1.5rem;
   background: #38bdf8;
   color: black;
@@ -58,5 +61,18 @@ button {
   cursor: pointer;
   border: none;
   border-radius: 999px;
+}
+button:hover {
+  background: #30b8f6;
+  box-shadow:
+      0 0 20px #50c0f0;
+}
+
+@media (max-width: 600px) {
+
+    .search-bar {
+        flex-direction: column;
+    }
+    
 }
 </style>

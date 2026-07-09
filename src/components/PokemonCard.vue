@@ -35,7 +35,7 @@ const rarity = computed(() => {
         <div v-else-if="pokemon.is_mythical" class="mythical-badge">
             MYTHICAL
         </div>
-        <img :src="pokemon.sprites.other['official-artwork'].front_default" :alt="pokemon.name" />
+        <img :src="`https://play.pokemonshowdown.com/sprites/ani/${pokemon.name}.gif`" :alt="pokemon.name" />
         <p class="number">
             #{{ pokemon.id.toString().padStart(4, "0") }}
         </p>

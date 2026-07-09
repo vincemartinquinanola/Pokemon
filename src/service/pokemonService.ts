@@ -9,7 +9,7 @@ const BASE_URL = "https://pokeapi.co/api/v2"
 
 export const pokemonService =  {
     async getPokemonList(
-        limit = 200,
+        limit = 50,
         offset = 0
     ): Promise<PokemonListResponse> {
         const response = await fetch(

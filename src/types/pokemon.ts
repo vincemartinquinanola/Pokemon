@@ -61,7 +61,7 @@ export interface PokemonStat {
     }
 }
 
-export interface PokemonSpecies {
+export interface PokemonSpecies extends Pokemon {
     is_legendary?: boolean
     is_mythical?: boolean
 }
