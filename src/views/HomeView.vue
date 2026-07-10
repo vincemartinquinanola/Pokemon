@@ -6,9 +6,32 @@ const router = useRouter()
 
 const video = ref<HTMLVideoElement>()
 
+const isUnmuted = ref(false)
+
+async function handleClick() {
+    if (!video.value) return
+
+    // First click: unmute only
+    if (!isUnmuted.value) {
+        isUnmuted.value = true
+
+        video.value.muted = false
+
+        try {
+            await video.value.play()
+        } catch (error) {
+            console.error(error)
+        }
+
+        return
+    }
+
+    // Second click: enter dashboard
+    enterDashboard()
+}
+
 function enterDashboard() {
     video.value?.pause()
-
     router.push("/dashboard")
 }
 
@@ -28,34 +51,23 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <main
-        class="home"
-        @click="enterDashboard"
-    >
-        <video
-            ref="video"
-            autoplay
-            playsinline
-            loop
-        >
-            <source
-                src="@/assets/intro.mp4"
-                type="video/mp4"
-            />
+    <main class="home" @click="handleClick">
+        <video ref="video" autoplay playsinline loop muted>
+            <source src="@/assets/intro.mp4" type="video/mp4" />
         </video>
 
         <div class="overlay">
 
             <h1>CYBER POKÉDEX</h1>
 
-            <p>Click anywhere or press ESC</p>
+            <p>Click anywhere to unmute</p>
+            <p>Click anywhere or press Esc to continue</p>
 
         </div>
     </main>
 </template>
 
 <style scoped>
-
 .home {
     position: fixed;
     inset: 0;
@@ -86,7 +98,7 @@ video {
 
     color: white;
 
-    background: rgba(0,0,0,.25);
+    background: rgba(0, 0, 0, .25);
 
     backdrop-filter: blur(2px);
 }
@@ -115,5 +127,4 @@ video {
         opacity: .3;
     }
 }
-
 </style>

@@ -7,26 +7,22 @@ const canvas = ref<HTMLCanvasElement | null>(null)
 
 onMounted(() => {
 
-    if (!canvas.value) return
+  if (!canvas.value) return
 
-    const game = new Game(canvas.value)
+  const game = new Game(canvas.value)
 
-    game.start()
+  game.start()
 
 })
 </script>
 
 <template>
 
-<div class="game">
+  <div class="game">
 
-<canvas
-ref="canvas"
-width="900"
-height="400"
-/>
+    <canvas ref="canvas" width="900" height="400" />
 
-</div>
+  </div>
 
 </template>
 

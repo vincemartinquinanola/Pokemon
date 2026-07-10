@@ -2,7 +2,7 @@ export class Obstacle {
     x: number
     y: number
 
-    width = 50
+    width = 40
     height = 70
 
     speed = 0

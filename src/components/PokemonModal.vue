@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { onMounted, ref, watch } from "vue"
 import type { Pokemon } from "@/types/pokemon"
 import TypeBadge from "./TypeBadge.vue"
 import { computed } from "vue"
@@ -66,6 +66,42 @@ function getStatColor(stat: string) {
       return "#38bdf8"
   }
 }
+
+const bootMessages = [
+  "Establishing secure connection...",
+  "Connecting to Pokédex database...",
+  `Scanning target: ${props.pokemon.name.toUpperCase()}`,
+  "Reading biological signature...",
+  "Loading battle statistics...",
+  "Rendering holographic profile..."
+]
+
+const visibleMessages = ref<string[]>([])
+
+watch(
+  () => props.pokemon,
+  async () => {
+
+    scanning.value = true
+    visibleMessages.value = []
+
+    for (const message of bootMessages) {
+
+      visibleMessages.value.push(message)
+
+      await new Promise(resolve =>
+        setTimeout(resolve, 250)
+      )
+
+    }
+
+    scanning.value = false
+
+  },
+  {
+    immediate: true
+  }
+)
 </script>
 
 <template>
@@ -80,13 +116,13 @@ function getStatColor(stat: string) {
         </div>
 
         <div class="terminal">
-          <p>> Establishing secure connection...</p>
-          <p>> Connecting to Pokédex database...</p>
-          <p>> Scanning target: {{ pokemon.name.toUpperCase() }}</p>
-          <p>> Reading biological signature...</p>
-          <p>> Loading battle statistics...</p>
-          <p>> Rendering holographic profile...</p>
+
+          <p v-for="message in visibleMessages" :key="message" class="boot-line">
+            > {{ message }}
+          </p>
+
         </div>
+
         <div v-if="pokemon.is_legendary" class="warning">
           ⚠ LEGENDARY LIFEFORM DETECTED
         </div>
@@ -105,7 +141,8 @@ function getStatColor(stat: string) {
         <div v-else-if="pokemon.is_mythical" class="mythical-badge">
           MYTHICAL
         </div>
-        <img class="pokemon-image" :src="`https://play.pokemonshowdown.com/sprites/ani/${pokemon.name}.gif`" :alt="pokemon.name" />
+        <img class="pokemon-image" :src="`https://play.pokemonshowdown.com/sprites/ani/${pokemon.name}.gif`"
+          :alt="pokemon.name" />
 
         <p class="number">
           #{{ pokemon.id.toString().padStart(4, "0") }}
@@ -378,52 +415,83 @@ h1 {
 }
 
 .warning {
-    margin-top: 1rem;
+  margin-top: 1rem;
 
-    color: gold;
+  color: gold;
 
-    font-weight: bold;
+  font-weight: bold;
 
-    text-shadow: 0 0 12px gold;
+  text-shadow: 0 0 12px gold;
 
-    animation: pulse 1s infinite alternate;
+  animation: pulse 1s infinite alternate;
 }
 
 .warning.mythical {
-    color: #ff66ff;
+  color: #ff66ff;
 
-    text-shadow: 0 0 12px #ff66ff;
+  text-shadow: 0 0 12px #ff66ff;
 }
 
 @keyframes pulse {
+  from {
+    opacity: 0.5;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .modal {
+    height: max(300px, 70vh);
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+
+  .pokemon-image {
+    width: 130px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .stat-header {
+
+    font-size: .8rem;
+  }
+
+  .abilities {
+    font-size: .8rem;
+  }
+}
+
+.boot-line {
+
+    opacity: 0;
+
+    animation: fadeIn .25s forwards;
+
+}
+
+@keyframes fadeIn {
+
     from {
-        opacity: 0.5;
+
+        opacity: 0;
+
+        transform: translateY(6px);
+
     }
 
     to {
+
         opacity: 1;
+
+        transform: translateY(0);
+
     }
+
 }
-@media (max-width: 600px) {
-    .modal {
-        height: max(300px, 70vh);
-        padding: 1.25rem;
-        border-radius: 12px;
-    }
-
-    .pokemon-image {
-        width: 130px;
-    }
-    h1 {
-        font-size: 1.5rem;
-    }
-    .stat-header {
-
-        font-size: .8rem;
-    }
-    .abilities {
-        font-size: .8rem;
-    }
-}
-
 </style>

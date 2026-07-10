@@ -5,12 +5,13 @@ import PokemonModal from "@/components/PokemonModal.vue"
 import PokemonGrid from "@/components/PokemonGrid.vue"
 import PokemonSkeleton from "@/components/PokemonSkeleton.vue"
 import SearchBar from "@/components/SearchBar.vue"
-
 import { usePokemon } from "@/composables/usePokemon"
-
+import PokemonSidebar from "@/components/PokemonSidebar.vue"
 import type { Pokemon } from "@/types/pokemon"
 
 const selectedPokemon = ref<Pokemon | null>(null)
+
+const showModal = ref(false)
 
 const {
     pokemonList,
@@ -35,7 +36,7 @@ function selectPokemon(pokemon: Pokemon) {
 }
 
 function closeModal() {
-    selectedPokemon.value = null
+    showModal.value = false
 }
 
 async function handleSearch(value: string) {
@@ -86,14 +87,24 @@ async function handleSearch(value: string) {
             {{ error }}
         </p>
 
-        <PokemonGrid v-else :pokemons="displayedPokemon" @select="selectPokemon" />
+        <div class="dashboard">
+
+            <PokemonSidebar :pokemon="selectedPokemon" @open="showModal = true" />
+
+            <div>
+
+                <PokemonGrid :pokemons="displayedPokemon" @select="selectPokemon" />
+
+            </div>
+
+        </div>
 
         <div class="load-more">
             <button v-if="hasMore && !loading" @click="fetchPokemonList">
                 Load More
             </button>
         </div>
-        <PokemonModal v-if="selectedPokemon" :pokemon="selectedPokemon" @close="closeModal" />
+        <PokemonModal v-if="selectedPokemon && showModal" :pokemon="selectedPokemon" @close="closeModal" />
     </main>
 </template>
 
@@ -116,10 +127,21 @@ async function handleSearch(value: string) {
 }
 
 .load-more button {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
+    width: max(120px, 5%);
+    padding: 0.75rem 1.5rem;
+    background: #38bdf8;
+    color: black;
+    font-weight: bold;
     cursor: pointer;
+    border: none;
+    border-radius: 999px;
+}
+
+
+.load-more button:hover {
+  background: #30b8f6;
+  box-shadow:
+      0 0 20px #50c0f0;
 }
 
 .skeleton-grid {
@@ -127,5 +149,35 @@ async function handleSearch(value: string) {
     grid-template-columns: repeat(auto-fit,
             minmax(220px, 1fr));
     gap: 1.5rem;
+}
+
+.dashboard {
+
+    display: grid;
+
+    grid-template-columns: 320px 1fr;
+
+    gap: 2rem;
+
+    align-items: start;
+
+}
+
+.sidebar {
+
+    cursor: pointer;
+
+    transition: .3s;
+
+}
+
+.sidebar:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 0 20px cyan,
+        0 0 40px cyan;
+
 }
 </style>
