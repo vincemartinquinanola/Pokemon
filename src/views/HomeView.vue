@@ -53,7 +53,7 @@ onUnmounted(() => {
 <template>
     <main class="home" @click="handleClick">
         <video ref="video" autoplay playsinline loop muted>
-            <source src="@/assets/intro.mp4" type="video/mp4" />
+            <source src="../assets/intro.mp4" type="video/mp4" />
         </video>
 
         <div class="overlay">
