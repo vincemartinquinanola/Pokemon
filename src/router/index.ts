@@ -5,7 +5,7 @@ import DashboardView from "@/views/DashBoard.vue"
 import MiniGameView from "@/views/MiniGame.vue"
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHistory(import.meta.env.BASE_URL),
 
     routes: [
         {
